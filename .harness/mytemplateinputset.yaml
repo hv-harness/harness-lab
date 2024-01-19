@@ -1,0 +1,70 @@
+inputSet:
+  name: my-template-inputset
+  identifier: mytemplateinputset
+  orgIdentifier: InstructorLedTraining
+  projectIdentifier: studentab4d461d5d
+  pipeline:
+    identifier: mytemplateexample
+    stages:
+      - stage:
+          identifier: templatestage
+          template:
+            templateInputs:
+              type: Deployment
+              spec:
+                services:
+                  values:
+                    - serviceInputs:
+                        serviceDefinition:
+                          type: Kubernetes
+                          spec:
+                            manifests:
+                              - manifest:
+                                  identifier: mymanifest
+                                  type: K8sManifest
+                                  spec:
+                                    store:
+                                      type: Git
+                                      spec:
+                                        repoName: ums-backend.git
+                                        paths:
+                                          - /deployment/harness/templates/
+                                    valuesPaths:
+                                      - /deployment/harness/dev-values.yaml
+                            artifacts:
+                              primary:
+                                primaryArtifactRef: myartifact
+                                sources:
+                                  - identifier: myartifact
+                                    type: DockerRegistry
+                                    spec:
+                                      imagePath: library/ums
+                                      tag: h7
+                      serviceRef: my_service
+                    - serviceInputs:
+                        serviceDefinition:
+                          type: Kubernetes
+                          spec:
+                            manifests:
+                              - manifest:
+                                  identifier: mymanifest
+                                  type: K8sManifest
+                                  spec:
+                                    store:
+                                      type: Git
+                                      spec:
+                                        repoName: ums-frontend.git
+                                        paths:
+                                          - /deployment/harness/templates/
+                                    valuesPaths:
+                                      - /deployment/harness/dev-values.yaml
+                            artifacts:
+                              primary:
+                                primaryArtifactRef: myartifact
+                                sources:
+                                  - identifier: myartifact
+                                    type: DockerRegistry
+                                    spec:
+                                      imagePath: library/ums-frontend
+                                      tag: h7
+                      serviceRef: my_frontend_service
