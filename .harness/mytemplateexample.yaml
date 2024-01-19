@@ -63,3 +63,9 @@ pipeline:
                   - environmentRef: my_prod_env
                     infrastructureDefinitions:
                       - identifier: my_prod_k8s
+  variables:
+    - name: replicacount
+      type: String
+      description: ""
+      required: true
+      value: <+input>
