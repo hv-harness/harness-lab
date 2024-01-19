@@ -23,7 +23,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: echo hello mars
+                        script: echo hello venus
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
