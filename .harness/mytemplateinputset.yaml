@@ -1,5 +1,6 @@
 inputSet:
   name: my-template-inputset
+  tags: {}
   identifier: mytemplateinputset
   orgIdentifier: InstructorLedTraining
   projectIdentifier: studentab4d461d5d
@@ -26,9 +27,9 @@ inputSet:
                                     store:
                                       type: Git
                                       spec:
-                                        repoName: ums-backend.git
                                         paths:
                                           - /deployment/harness/templates/
+                                        repoName: ums-backend.git
                                     valuesPaths:
                                       - /deployment/harness/dev-values.yaml
                             artifacts:
@@ -53,9 +54,9 @@ inputSet:
                                     store:
                                       type: Git
                                       spec:
-                                        repoName: ums-frontend.git
                                         paths:
                                           - /deployment/harness/templates/
+                                        repoName: ums-frontend.git
                                     valuesPaths:
                                       - /deployment/harness/dev-values.yaml
                             artifacts:
@@ -68,3 +69,7 @@ inputSet:
                                       imagePath: library/ums-frontend
                                       tag: h7
                       serviceRef: my_frontend_service
+    variables:
+      - name: replicacount
+        type: String
+        value: "1"
