@@ -1,71 +1,64 @@
 pipeline:
   name: my-template-example
   identifier: mytemplateexample
+  tags: {}
+  template:
+    templateRef: mypipelinetemplate
+    versionLabel: 1.0.0
+    gitBranch: main
+    templateInputs:
+      stages:
+        - stage:
+            identifier: templatestage
+            template:
+              templateInputs:
+                type: Deployment
+                spec:
+                  services:
+                    values:
+                      - serviceInputs:
+                          serviceDefinition:
+                            type: Kubernetes
+                            spec:
+                              manifests:
+                                - manifest:
+                                    identifier: mymanifest
+                                    type: K8sManifest
+                                    spec:
+                                      store:
+                                        type: Git
+                                        spec:
+                                          paths: <+input>
+                                          repoName: <+input>
+                                      valuesPaths: <+input>
+                              artifacts:
+                                primary:
+                                  primaryArtifactRef: <+input>
+                                  sources: <+input>
+                        serviceRef: my_service
+                      - serviceInputs:
+                          serviceDefinition:
+                            type: Kubernetes
+                            spec:
+                              manifests:
+                                - manifest:
+                                    identifier: mymanifest
+                                    type: K8sManifest
+                                    spec:
+                                      store:
+                                        type: Git
+                                        spec:
+                                          paths: <+input>
+                                          repoName: <+input>
+                                      valuesPaths: <+input>
+                              artifacts:
+                                primary:
+                                  primaryArtifactRef: <+input>
+                                  sources: <+input>
+                        serviceRef: my_frontend_service
+      variables:
+        - name: replicacount
+          type: String
+          value: <+input>
   projectIdentifier: studentab4d461d5d
   orgIdentifier: InstructorLedTraining
-  tags: {}
-  stages:
-    - stage:
-        name: template-stage
-        identifier: templatestage
-        tags: {}
-        template:
-          templateRef: mystagetemplate
-          versionLabel: 1.0.0
-          gitBranch: main
-          templateInputs:
-            type: Deployment
-            spec:
-              services:
-                values:
-                  - serviceInputs:
-                      serviceDefinition:
-                        type: Kubernetes
-                        spec:
-                          manifests:
-                            - manifest:
-                                identifier: mymanifest
-                                type: K8sManifest
-                                spec:
-                                  store:
-                                    type: Git
-                                    spec:
-                                      paths: <+input>
-                                      repoName: <+input>
-                                  valuesPaths: <+input>
-                          artifacts:
-                            primary:
-                              primaryArtifactRef: <+input>
-                              sources: <+input>
-                    serviceRef: my_service
-                  - serviceInputs:
-                      serviceDefinition:
-                        type: Kubernetes
-                        spec:
-                          manifests:
-                            - manifest:
-                                identifier: mymanifest
-                                type: K8sManifest
-                                spec:
-                                  store:
-                                    type: Git
-                                    spec:
-                                      paths: <+input>
-                                      repoName: <+input>
-                                  valuesPaths: <+input>
-                          artifacts:
-                            primary:
-                              primaryArtifactRef: <+input>
-                              sources: <+input>
-                    serviceRef: my_frontend_service
-              environments:
-                values:
-                  - environmentRef: my_prod_env
-                    infrastructureDefinitions:
-                      - identifier: my_prod_k8s
-  variables:
-    - name: replicacount
-      type: String
-      description: ""
-      required: true
-      value: <+input>
