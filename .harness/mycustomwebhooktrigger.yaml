@@ -1,0 +1,70 @@
+---
+pipeline:
+  projectIdentifier: "studentab4d461d5d"
+  orgIdentifier: "InstructorLedTraining"
+  tags: {}
+  stages:
+  - stage:
+      name: "my-preprod"
+      identifier: "mypreprod"
+      description: ""
+      type: "Deployment"
+      spec:
+        deploymentType: "Kubernetes"
+        service:
+          serviceRef: "<+input>"
+          serviceInputs: "<+input>"
+        environment:
+          environmentRef: "<+input>"
+          deployToAll: false
+          environmentInputs: "<+input>"
+          serviceOverrideInputs: "<+input>"
+          infrastructureDefinitions: "<+input>"
+        execution:
+          steps:
+          - step:
+              type: "K8sRollingDeploy"
+              name: "K8sRollingDeploy_1"
+              identifier: "K8sRollingDeploy_1"
+              spec: {}
+          - step:
+              type: "ShellScript"
+              name: "ShellScript_1"
+              identifier: "ShellScript_1"
+              spec:
+                shell: "Bash"
+                executionTarget: {}
+                source:
+                  type: "Inline"
+                  spec:
+                    script: "echo <+pipeline.stages.mypreprod.spec.execution.steps.ShellScript_1.spec.environmentVariables.get(\"\
+                      my-var\")>"
+                environmentVariables:
+                - name: "my-var"
+                  type: "String"
+                  value: "<+input>"
+                outputVariables: []
+              timeout: "10m"
+          rollbackSteps:
+          - step:
+              name: "Rollback Rollout Deployment"
+              identifier: "rollbackRolloutDeployment"
+              type: "K8sRollingRollback"
+              timeout: "10m"
+              spec:
+                pruningEnabled: false
+      tags: {}
+      failureStrategies:
+      - onFailure:
+          errors:
+          - "AllErrors"
+          action:
+            type: "StageRollback"
+  variables:
+  - name: "replicacount"
+    type: "String"
+    description: ""
+    required: false
+    value: "1"
+  identifier: "mycustomwebhooktrigger"
+  name: "my-custom-webhook-trigger"
