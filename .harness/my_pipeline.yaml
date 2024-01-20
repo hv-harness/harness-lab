@@ -1,0 +1,100 @@
+pipeline:
+  name: my-pipeline
+  identifier: my_pipeline
+  projectIdentifier: studentab4d461d5d
+  orgIdentifier: InstructorLedTraining
+  tags: {}
+  stages:
+    - stage:
+        name: preprod
+        identifier: preprod
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          execution:
+            steps:
+              - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: K8sRollingDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: K8sRollingRollback
+                  timeout: 10m
+                  spec:
+                    pruningEnabled: false
+          services:
+            values:
+              - serviceRef: my_service
+                serviceInputs:
+                  serviceDefinition:
+                    type: Kubernetes
+                    spec:
+                      manifests:
+                        - manifest:
+                            identifier: mymanifest
+                            type: K8sManifest
+                            spec:
+                              store:
+                                type: Git
+                                spec:
+                                  paths: <+input>
+                                  repoName: <+input>
+                              valuesPaths: <+input>
+                      artifacts:
+                        primary:
+                          primaryArtifactRef: <+input>
+                          sources: <+input>
+              - serviceRef: my_frontend_service
+                serviceInputs:
+                  serviceDefinition:
+                    type: Kubernetes
+                    spec:
+                      manifests:
+                        - manifest:
+                            identifier: mymanifest
+                            type: K8sManifest
+                            spec:
+                              store:
+                                type: Git
+                                spec:
+                                  paths: <+input>
+                                  repoName: <+input>
+                              valuesPaths: <+input>
+                      artifacts:
+                        primary:
+                          primaryArtifactRef: <+input>
+                          sources: <+input>
+            metadata:
+              parallel: false
+          environments:
+            metadata:
+              parallel: true
+            values:
+              - environmentRef: my_dev_env
+                deployToAll: false
+                infrastructureDefinitions:
+                  - identifier: my_dev_k8s
+              - environmentRef: my_prod_env
+                deployToAll: true
+                infrastructureDefinitions: <+input>
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+  variables:
+    - name: replicacount
+      type: Number
+      description: ""
+      required: false
+      value: <+input>
