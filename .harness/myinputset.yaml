@@ -1,0 +1,43 @@
+inputSet:
+  name: my-input-set
+  identifier: myinputset
+  orgIdentifier: InstructorLedTraining
+  projectIdentifier: studentab4d461d5d
+  pipeline:
+    identifier: ilt001flowcontrolqueuesteps
+    stages:
+      - stage:
+          identifier: stage001devdeploy
+          type: Deployment
+          spec:
+            service:
+              serviceInputs:
+                serviceDefinition:
+                  type: Kubernetes
+                  spec:
+                    manifests:
+                      - manifest:
+                          identifier: mymanifest
+                          type: K8sManifest
+                          spec:
+                            store:
+                              type: Git
+                              spec:
+                                paths:
+                                  - /deployment/harness/templates/
+                                repoName: ums-backend.git
+                            valuesPaths:
+                              - /deployment/harness/dev-values.yaml
+                    artifacts:
+                      primary:
+                        primaryArtifactRef: myartifact
+                        sources:
+                          - identifier: myartifact
+                            type: DockerRegistry
+                            spec:
+                              imagePath: library/ums
+                              tag: h7
+    variables:
+      - name: replicacount
+        type: String
+        value: "1"
